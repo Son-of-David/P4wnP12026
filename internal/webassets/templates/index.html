@@ -1,0 +1,77 @@
+{{define "index.html"}}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>P4wnP12026 Wireless by S.o.D</title>
+  <link rel="stylesheet" href="/static/vendor/xterm.css">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <header>
+    <h1>P4wnP12026 Wireless Testing Console by S.o.D</h1>
+    <p class="legal">
+      Authorized use only: You may test only devices and networks that you own or for which you have explicit written permission. Wireless infrastructure is protected under most countries laws. Misuse even accidental is a serious offense. Know what you are doing.
+    </p>
+    <p class="warning">
+      If you are running these services connected over wifi you will need a wireless adapter capable of monitor mode and using pi defaults otherwise it will not work and you will be disconnected. A reboot after should restore services if you make a mistake. USBeth connection is required for use of wlan0mon. USBeth is currently not supported on android. 
+    </p>
+  </header>
+
+  <main>
+    <section class="panel">
+      <h2>Mode Switch</h2>
+      <p class="warning">
+        Warning: These actions run boot helper scripts on the Pi. They may alter boot or network settings, require a reboot, or disconnect you. Use only on systems you own or are authorized to manage.
+      </p>
+      <div class="row">
+        <button id="bootUsbGadget" class="btn red">Enable usb_gadget</button>
+        <button id="bootDefaults" class="btn blue">Enable defaults</button>
+        <button id="bootCheck" class="btn yellow">Check boot_settings</button>
+      </div>
+      <div id="modeResult" class="result"></div>
+      <pre id="bootCheckOutput" class="boot-check-output" hidden></pre>
+    </section>
+
+    <section class="panel">
+      <h2>Kismet Control</h2>
+      <div class="row">
+        <button id="kismetStart" class="btn yellow">Start Kismet</button>
+        <button id="kismetStop" class="btn red">Stop Kismet</button>
+        <button id="openKismet" class="btn blue">Open Kismet Web UI (:2501)</button>
+      </div>
+      <div id="kismetStatus" class="result"></div>
+    </section>
+
+    <section class="panel">
+      <h2>Airgeddon (tmux)</h2>
+      <div class="row">
+        <button id="airgeddonStart" class="btn yellow">Start Airgeddon</button>
+        <button id="airgeddonStop" class="btn red">Stop Airgeddon</button>
+        <button id="openAirgeddon478" class="btn blue">Open Airgeddon Terminal Window</button>
+      </div>
+      <div id="airgeddonStatus" class="result"></div>
+    </section>
+
+    <section class="panel">
+      <h2>GPS Control</h2>
+      <div class="row">
+        <button id="gpsStart" class="btn yellow">Start GPS</button>
+        <button id="gpsStop" class="btn red">Stop GPS</button>
+        <button id="gpsView" class="btn blue">View GPS</button>
+      </div>
+      <div id="gpsStatus" class="result"></div>
+    </section>
+
+    <section class="panel">
+      <h2>Interactive Shell (/usr/share/S.o.D/)</h2>
+      <div id="shellTerm" class="term"></div>
+    </section>
+  </main>
+
+  <script src="/static/vendor/xterm.js"></script>
+  <script src="/static/app.js"></script>
+</body>
+</html>
+{{end}}

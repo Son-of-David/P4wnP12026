@@ -1,0 +1,30 @@
+# Build output
+/build/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Go test / debug binaries
+*.test
+*.out
+__debug_bin
+__debug_bin*
+
+# Coverage
+coverage.out
+*.coverprofile
+profile.cov
+
+# Module cache (local); vendor/ is not ignored — full mirror commits deps
+go.work
+go.work.sum
+
+# Editors and OS
+.idea/
+.vscode/
+*.swp
+*~
+.DS_Store
+Thumbs.db

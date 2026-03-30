@@ -1,0 +1,13 @@
+[Unit]
+Description=Phone GPS NMEA relay (UDP -> PTY)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/socat -u UDP-RECV:9999,reuseaddr PTY,link=/dev/phonegps,raw,echo=0,mode=660
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
