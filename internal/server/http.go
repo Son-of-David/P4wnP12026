@@ -93,7 +93,7 @@ func (s *Server) handleKismetStart(w http.ResponseWriter, _ *http.Request) {
 	}
 	writeJSON(w, http.StatusOK, map[string]any{
 		"ok":      true,
-		"message": "startup.sh launched; check /usr/local/EchoPi/kismet/ for Kismet output",
+		"message": "startup.sh launched; check /usr/share/S.o.D/kismet/ for Kismet output",
 	})
 }
 

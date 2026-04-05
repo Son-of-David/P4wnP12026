@@ -1,0 +1,16 @@
+[Unit]
+Wants=network-online.target local-fs.target
+After=systemd-modules-load.service local-fs.target network-online.target systemd-udev-trigger.service
+
+[Service]
+ExecStartPre=/bin/sh -lc 'udevadm settle -t 10 || true'
+ExecStartPre=/bin/sh -lc 'sleep 2'
+ExecStart=/usr/local/bin/P4wnP1_service
+Restart=on-failure
+RestartSec=2
+
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

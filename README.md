@@ -1,36 +1,116 @@
-### P4wnP1 2026 by S.o.D ###
+# P4wnP1 2026 (by S.o.D.)
 
-![P4wnP12026](docs/images/P4wnP12026.png)
-![P4wnP1 A.L.O.A Armhf](docs/images/P4wnP1%20A.L.O.A%20Armhf.png)
-![Architecture](docs/images/Architecture.png)
-![P4wnP1 status](docs/images/P4wnP1_status.png)
-![Interfaces](docs/images/interfaces.png)
+**P4wnP1 2026** is a Go web control panel aimed at Raspberry Pi Zero 2 W workflows in the **P4wnP1 / A.L.O.A** tradition. It packages a small HTTP UI, service helpers, and interactive terminals to support **education and authorized security testing only**.
 
-**P4wnP1 2026** is a Go web control panel aimed at Raspberry Pi Zero 2 W workflows that sit in the **P4wnP1 / A.L.O.A** tradition. It packages a small HTTP UI, service helpers, and interactive terminals so you can run authorized wireless lab and field tests from a browser—without treating rogue AP tricks, deauthentication, or hash capture as product goals (contrast with tools like Pwnagotchi that lean that way). Use it only where you have **explicit permission** and comply with local law; this project is for **education and authorized security testing**.
+This project is a more legal and practical implementation of an idea people have asked about for years:
 
-The stack assumes you understand the original P4wnP1 model: **USB Ethernet** to the Pi for stable management access, **monitor mode on `wlan0mon`** for capture-oriented tools, and **boot profiles** (`usb_gadget` vs `pi_defaults`) that pair with your choice of onboard vs external Wi‑Fi adapter. If you rely on Wi‑Fi for admin access while switching profiles or adapters, you can lock yourself out—a reboot from a known-good configuration usually restores service.
+> **“Is there a P4wnagotchi-style P4wnP1, and how would I do that?”**
 
-**GPS:** GPS tooling is integrated with the host’s `gpsd` setup; if you feed position over the network, a common pattern is a **UDP listener on port 9999** (adjust to match your `gpsd` / client configuration).
+While other projects may take a more automated approach, those can raise legal and ethical issues when used to capture traffic without explicit authorization. This tool is designed to support **selecting the devices and targets you are explicitly permitted to test**.
 
-**Interactive sessions:** Airgeddon runs inside **tmux** over a web PTY; keyboard shortcuts and tmux prefix keys apply as they would in a normal terminal. A second shell session is rooted at `/usr/share/S.O.D/` for local scripts and tooling.
+**Use only where you have explicit permission and comply with local law.**
 
-**Default credentials:** Images and profiles in this family often ship with **default Wi‑Fi and P4wnP1 passkeys**. Treat those as **insecure**—change them before any real deployment.
+---
 
-Stock behavior, hardware expectations, and upstream concepts are best understood from the official **P4wnP1** lineage. See: [RoganDawes/P4wnP1](https://github.com/RoganDawes/P4wnP1).
+## Screenshots / Diagrams
+
+<img src="P4wnP12026.png" width="600" alt="P4wnP12026">
+<img src="Armhf_P4wnP1.png" width="600" alt="Armhf_P4wnP1">
+<img src="P4wnP1_status.png" width="600" alt="P4wnP1 status">
+<img src="Architecture.png" width="600" alt="Architecture">
+<img src="interfaces.png" width="600" alt="Interfaces">
+
+---
+
+## Overview / Assumptions
+
+This stack assumes you understand the original P4wnP1 model:
+
+- **USB Ethernet** to the Pi for stable management access
+- **Monitor mode on `wlan0mon`** for capture-oriented tooling
+- **Boot profiles** (`usb_gadget` vs `pi_defaults`) that pair with your choice of onboard vs external Wi‑Fi adapter 
+
+### Important: avoid locking yourself out
+If you rely on Wi‑Fi for admin access, avoid putting `wlan0` into monitor mode (or otherwise disrupting it), as you can lock yourself out. A reboot usually restores service.
+
+---
+
+## Ports (Quick Reference)
+- **Original P4wnP1:** `:8000`
+- **P4wnP12026 Web UI:** `:8001`
+- **Kismet:** `:2501` (the helper may redirect your browser here)
+- **GPS (optional/common pattern):** UDP input on `:9999` (adjust to match your `gpsd` and client configuration)
+
+---
+
+## Security Notes (Read First)
+
+Images and profiles in this family often ship with default Wi‑Fi and P4wnP1 passkeys, as well as default credentials like:
+
+- `root:toor`
+- `kali:kali`
+
+Treat defaults as insecure. **Change passwords and keys before any real deployment.**
+
+---
 
 ## Operations
 
-- **Web UI:** listens on port **8001** (bind address depends on your Pi network setup).
-- **Boot profile:** switch between **`usb_gadget`** and **`pi_defaults`** from the UI when you need gadget-style USB networking vs standard Pi defaults; confirm prompts and expect a **reboot** where the flow requires it.
-- **Kismet:** start/stop from the UI; the helper redirects the browser to Kismet on port **2501** when appropriate.
-- **Monitor mode:** Kismet and Airgeddon scripts expect **`wlan0mon`**; **USB Ethernet** is the supported path for stable control while using monitor mode (USB Ethernet is **not** supported on Android for this workflow).
-- **GPS:** use the UI start/stop actions, which drive the bundled `gpsd` scripts under `gpsd/scripts/` on the device (`/root/P4wnP12026/...` when deployed as documented in the tree).
-- **Terminals:** **Airgeddon** (tmux) and a general shell under **`/usr/share/S.O.D/`** via WebSocket PTYs.
+### Web UI
+- The UI listens on port **8001**.
+- The bind address depends on your network setup (for example, binding to `0.0.0.0` vs `127.0.0.1`, and which interface you use for management such as USB Ethernet).
+
+### Boot Profile
+Switch between **`usb_gadget`** and **`pi_defaults`** from the UI when you need gadget-style USB networking vs standard Pi defaults. Confirm prompts and expect a **reboot** when the workflow requires it.
+
+### Kismet
+Start/stop Kismet from the UI. The helper redirects the browser to Kismet on port **2501** when appropriate.
+
+### Monitor Mode
+Kismet and Airgeddon workflows expect **`wlan0mon`**. For stable control while using monitor mode, **USB Ethernet** is the supported management path.
+
+> Note: USB Ethernet is not supported on Android for this workflow.
+
+### GPS
+GPS tooling is integrated with the host’s `gpsd` setup.
+
+- The UI start/stop actions drive the bundled `gpsd` scripts under `gpsd/scripts/`.
+- When deployed as documented in the tree, paths are rooted under something like `/root/P4wnP12026/...`.
+
+One common pattern is feeding GPS to `gpsd` via a **UDP listener on port 9999** (adjust to match your `gpsd` / client configuration).
+
+### Interactive Sessions / Terminals
+- **Airgeddon** runs inside **tmux** over a web PTY; tmux prefix keys and shortcuts behave like a normal terminal.
+- A second shell session is rooted at **`/usr/share/S.O.D/`** for local scripts and tooling.
+- Terminal access is provided via WebSocket PTYs.
+
+---
+
+## USB Dongle Usage
+
+A USB dongle can be used to power and transfer data while the device is configured as a `usb_gadget`.
+
+To use USB as **power-only**, the data connection needs to be broken. This was tested by blocking the data pins with an insulator (e.g., insulating tape/film). After researching a hardware device that would provide a physical “data kill/activation” switch, no reasonably sourceable option was found.
+
+If someone creates a free/open-source project for:
+
+- a dongle with a working **data switch**, and
+- an optional **3D-printed case** design
+
+…it would be appreciated.
+
+---
 
 ## Credits / License
 
-- **P4wnP1 / A.L.O.A** ecosystem and ideas trace to **MaMe82** and the broader **P4wnP1** community; this repository is a derivative control layer and filesystem mirror, not a replacement for upstream firmware documentation.
+- **P4wnP1 / A.L.O.A** ecosystem and upstream ideas trace to **MaMe82** and the broader **P4wnP1** community.
+- This repository is a derivative control layer and filesystem mirror, not a replacement for upstream firmware documentation.
 - Respect the **licenses** of bundled upstream assets under `vendor/`, `usr/`, and other third-party trees when redistributing.
+
+Upstream lineage reference:
+- RoganDawes/P4wnP1: https://github.com/RoganDawes/P4wnP1
+
+---
 
 ## Build
 
@@ -47,30 +127,45 @@ env \
   go build -o ./build/P4wnP12026 ./cmd/P4wnP12026
 ```
 
-The HTML/CSS/JS UI is embedded in the binary (`internal/webassets`), so you can run the binary from any working directory; you do not need a separate `web/` folder beside it.
+The HTML/CSS/JS UI is embedded in the binary (`internal/webassets`), so you can run the binary from any working directory (you do not need a separate `web/` folder beside it):
 
 ```bash
 ./build/P4wnP12026
 ```
 
-## GitHub setup
+---
 
-If this directory is not yet a Git repository:
+## Image Build Notes
 
-```bash
-cd /path/to/P4wnP12026
-git init
-git add -A
-git status   # review; vendor/ is intentionally tracked for a full mirror
-git commit -m "Initial commit: P4wnP1 2026 control panel"
-```
+This image is based on packages sourced from:
 
-Create an empty repository on GitHub (no README/license templates if you want a clean first push), then:
+- https://github.com/NightRang3r/P4wnP1-A.L.O.A.-Payloads
+- A carefully installed P4wnP1_aloa image layered onto a Kali ARMHF image:
+  - https://old.kali.org/arm-images/kali-2025.3/kali-linux-2025.3-raspberry-pi-zero-2-w-armhf.img.xz
 
-```bash
-git branch -M main
-git remote add origin https://github.com/<you>/<repo>.git
-git push -u origin main
-```
+Additional upstream components were taken from:
 
-Add screenshots to **`docs/images/`** using the filenames referenced at the top of this README so the image links resolve on GitHub.
+- https://github.com/RoganDawes/P4wnP1_aloa.git
+
+### High-level build process (summary)
+
+1. Start from `kali-linux-2025.3-raspberry-pi-zero-2-w-armhf.img.xz`.
+2. Install/merge the most recently updated P4wnP1_aloa payload packages available from the sources above.
+3. Rebuild:
+   - `P4wnP1_service`
+   - `P4wnP1_cli`
+4. Change default DHCP lease times from **5 minutes** to **24 hours**.
+5. Move the file structure and supporting files into the correct locations.
+6. Build and install the `P4wnP12026` service.
+
+### Storage requirements
+With the older packages layered on top of the Kali ARMHF image, the result takes up most of a 16GB microSD.
+
+- **For best results, use a 32GB microSD.**
+
+### Version selection rationale
+These images were chosen because:
+
+- The P4wnP1_aloa image was the most recently updated at the time.
+- The `kali-linux-2025.3-raspberry-pi-zero-2-w-armhf.img.xz` image is ARMHF and (in testing the) does **not** exhibit the same Kismet/Airgeddon SSID issues observed with:
+  - `kali-linux-2026.1-raspberry-pi-zero-2-w-armhf.img.xz` these issues where observed 2026-02-15 and may have been fixed.

@@ -131,7 +131,17 @@ async function postJSON(url, body) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body || {})
   });
-  return res.json();
+  const text = await res.text();
+  if (!text) {
+    return {};
+  }
+  try {
+    return JSON.parse(text);
+  } catch {
+    throw new Error(
+      (text && text.slice(0, 200)) || `Unexpected response (HTTP ${res.status})`
+    );
+  }
 }
 
 const BOOT_FIRMWARE_CONFIRM_MSG =
@@ -169,6 +179,49 @@ function kismetMessage(msg, ok) {
   const out = document.getElementById("kismetStatus");
   out.textContent = msg;
   out.style.color = ok ? "#006400" : "#a00000";
+}
+
+/** Match server /kismet redirect: Kismet UI is HTTP on port 2501 (same host as the panel). */
+function kismetWebUIURL() {
+  return `http://${location.hostname}:2501/`;
+}
+
+function openKismetWebUIInNewWindow() {
+  const win = window.open(
+    kismetWebUIURL(),
+    "_blank",
+    "noopener,noreferrer"
+  );
+  if (!win) {
+    kismetMessage("Popup blocked. Allow popups for this site to open Kismet.", false);
+    return false;
+  }
+  return true;
+}
+
+async function fetchKismetRunning() {
+  const res = await fetch("/api/kismet/status");
+  if (!res.ok) {
+    return false;
+  }
+  const data = await res.json();
+  return !!data.running;
+}
+
+/** Poll until pgrep sees kismet (startup.sh returns before systemd finishes). */
+async function waitForKismetRunning(maxWaitMs = 45000, pollMs = 500) {
+  const deadline = Date.now() + maxWaitMs;
+  while (Date.now() < deadline) {
+    try {
+      if (await fetchKismetRunning()) {
+        return true;
+      }
+    } catch {
+      /* keep polling */
+    }
+    await new Promise((r) => setTimeout(r, pollMs));
+  }
+  return false;
 }
 
 function airgeddonMessage(msg, ok) {
@@ -346,20 +399,50 @@ document.getElementById("bootCheck").addEventListener("click", async () => {
 });
 
 document.getElementById("kismetStart").addEventListener("click", async () => {
-  const result = await postJSON("/api/kismet/start");
-  kismetMessage(
-    result.ok ? (result.message || "Kismet startup script launched.") : result.error,
-    !!result.ok
-  );
+  try {
+    kismetMessage("Starting Kismet…", true);
+    const result = await postJSON("/api/kismet/start");
+    if (!result.ok) {
+      kismetMessage(result.error || "Start failed.", false);
+      return;
+    }
+    kismetMessage(
+      result.message || "Startup script launched; waiting for Kismet process…",
+      true
+    );
+    const running = await waitForKismetRunning();
+    if (running) {
+      kismetMessage(
+        "Kismet is running. Open the web UI in a new window (button below) to keep this panel open.",
+        true
+      );
+    } else {
+      kismetMessage(
+        "Startup was triggered but Kismet is not reporting as running yet. Check logs or try Stop and Start again.",
+        false
+      );
+    }
+  } catch (err) {
+    kismetMessage(String(err), false);
+  }
 });
 
 document.getElementById("kismetStop").addEventListener("click", async () => {
-  const result = await postJSON("/api/kismet/stop");
-  kismetMessage(result.ok ? "Kismet stopped." : result.error, !!result.ok);
+  try {
+    const result = await postJSON("/api/kismet/stop");
+    kismetMessage(result.ok ? "Kismet stopped." : result.error, !!result.ok);
+    if (result.ok) {
+      await refreshKismet();
+    }
+  } catch (err) {
+    kismetMessage(String(err), false);
+  }
 });
 
 document.getElementById("openKismet").addEventListener("click", () => {
-  window.location.href = "/kismet";
+  if (openKismetWebUIInNewWindow()) {
+    kismetMessage("Kismet UI opened in a new window; this control panel stays here.", true);
+  }
 });
 
 document.getElementById("airgeddonStart").addEventListener("click", async () => {

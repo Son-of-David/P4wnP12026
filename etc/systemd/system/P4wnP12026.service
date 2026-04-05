@@ -1,0 +1,17 @@
+[Unit]
+Description=P4wnP12026 web control plane
+Wants=network-online.target P4wnP1.service
+After=network-online.target P4wnP1.service
+
+[Service]
+Type=simple
+User=root
+Group=root
+ExecStart=/usr/local/bin/P4wnP12026
+Restart=on-failure
+RestartSec=3
+# Optional: set a shared secret for /api/* (X-ECHO-TOKEN) and WebSocket ?token=
+# Environment=ECHO_TOKEN=change-me
+
+[Install]
+WantedBy=multi-user.target

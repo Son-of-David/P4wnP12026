@@ -1,0 +1,13 @@
+[Unit]
+Description=Kismet on wlan1
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/kismet -c wlan1
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,18 @@
+[Unit]
+Description=P4wnP1 Startup Service
+Wants=network-online.target local-fs.service
+After=systemd-modules-load.service local-fs.service network-online.target
+
+[Service]
+Type=simple
+User=root
+Environment="PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+ExecStart=/usr/local/bin/P4wnP1_service
+Restart=on-failure
+RestartSec=2
+
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
