@@ -34,7 +34,7 @@ install:
 	cp .tmux.conf /root/
 	mkdir -p /usr/share/S.o.D/kismet
 	mkdir -p /usr/share/S.o.D/airgeddon
-	cp usr/share/airgeddon/* /usr/share/airgeddon/
+	cp usr/share/airgeddon/.* /usr/share/airgeddon/
 	cp etc/kismet/* /etc/kismet
 	cp usr/local/bin/* /usr/local/bin/
 
@@ -84,7 +84,7 @@ full_install:
 	cp .tmux.conf /root/
 	mkdir -p /usr/share/S.o.D/kismet
 	mkdir -p /usr/share/S.o.D/airgeddon
-	cp usr/share/airgeddon/* /usr/share/airgeddon/
+	cp usr/share/airgeddon/.* /usr/share/airgeddon/
 	cp etc/kismet/* /etc/kismet
 	cp usr/local/bin/* /usr/local/bin/
 
