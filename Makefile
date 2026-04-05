@@ -25,7 +25,8 @@ dep:
          
 
 install:
-
+	chmod +x cmdline.txt.sh
+	./cmdline.txt.sh
 	cp -r usr/local/P4wnP1 /usr/local/
 	cp usr/lib/systemd/system/gpsd.socket /usr/lib/systemd/system/gpsd.socket
 	cp etc/cloud/templates/hosts.debian.tmpl /etc/cloud/templates/hosts.debian.tmpl
