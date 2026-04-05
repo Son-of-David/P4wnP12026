@@ -2,7 +2,8 @@
 set -euo pipefail
 
 SRC="/boot/firmware/cmdline.txt"
-DEST_DIR="/root/P4wnP12026/bootdata/usb_gadget/cmdline.txt
+
+OUT_USB="/root/P4wnP12026/bootdata/usb_gadget/cmdline.txt"
 BACKUP="/root/P4wnP12026/bootdata/defaults/cmdline.txt"
 
 if [[ $EUID -ne 0 ]]; then
@@ -15,7 +16,11 @@ if [[ ! -f "$SRC" ]]; then
   exit 1
 fi
 
-mkdir -p "$DEST_DIR"
+# Ensure parent dirs exist
+mkdir -p "$(dirname "$OUT_USB")"
+mkdir -p "$(dirname "$BACKUP")"
+
+# Backup original cmdline (before changes)
 cp -a "$SRC" "$BACKUP"
 echo "Backup written to: $BACKUP"
 
@@ -40,8 +45,7 @@ fi
 # If modules-load already exists, keep as-is (but ensure dwc2 is included)
 if grep -qE '(^| )modules-load=' <<<"$CMDLINE"; then
   if grep -qE '(^| )modules-load=[^ ]*\bdwc2\b' <<<"$CMDLINE"; then
-    echo "modules-load already includes dwc2; no change needed."
-    exit 0
+    NEW="$CMDLINE"
   else
     # append dwc2 to existing modules-load= list (comma-separated)
     NEW="$(sed -E 's/(^| )modules-load=([^ ]*)/\1modules-load=\2,dwc2/' <<<"$CMDLINE")"
@@ -57,6 +61,9 @@ NEW="$(sed -E 's/[[:space:]]+/ /g; s/^ //; s/ $//' <<<"$NEW")"
 echo "Writing updated cmdline to $SRC:"
 echo "$NEW"
 printf "%s\n" "$NEW" > "$SRC"
+
+echo "Also writing updated cmdline to $OUT_USB"
+printf "%s\n" "$NEW" > "$OUT_USB"
 
 echo "Done."
 echo "Reboot to apply: reboot"
