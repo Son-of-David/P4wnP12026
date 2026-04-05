@@ -17,11 +17,11 @@ dep:
 	sudo pip install pycryptodome --break-system-packages # already present on stretch
 	
         # dependencies for kismet gpsd and airgeddon
-	sudo apt-get install kismet gpsd gpsd-clients airgeddon
-	sudo apt-get install bettercap-ui isc-dhcp-server-ldap php-cgi lighttpd-mod-webdav
-	sudo apt-get install resolvconf ffmpeg php-fpm lighttpd-modules-dbi mmdb-bin libsox-fmt-alsa
-	sudo apt-get install spawn-fcgi lighttpd-modules-lua gpsd-clients 
-	sudo apt-get install libsox-fmt-oss lighttpd-doc xfonts-cyrillic tmux
+	sudo apt-get -y install kismet gpsd gpsd-clients airgeddon
+	sudo apt-get -y install bettercap-ui isc-dhcp-server-ldap php-cgi lighttpd-mod-webdav
+	sudo apt-get -y install resolvconf ffmpeg php-fpm lighttpd-modules-dbi mmdb-bin libsox-fmt-alsa
+	sudo apt-get -y install spawn-fcgi lighttpd-modules-lua gpsd-clients 
+	sudo apt-get -y install libsox-fmt-oss lighttpd-doc xfonts-cyrillic tmux
          
 
 install:
@@ -70,11 +70,11 @@ full_install:
 	sudo pip install pycryptodome --break-system-packages # already present on stretch
 
         # dependencies for kismet gpsd and airgeddon
-	sudo apt-get install kismet gpsd gpsd-clients airgeddon
-	sudo apt-get install bettercap-ui isc-dhcp-server-ldap php-cgi lighttpd-mod-webdav
-	sudo apt-get install resolvconf ffmpeg php-fpm lighttpd-modules-dbi mmdb-bin libsox-fmt-alsa
-	sudo apt-get install spawn-fcgi lighttpd-modules-lua gpsd-clients 
-	sudo apt-get install libsox-fmt-oss lighttpd-doc xfonts-cyrillic tmux
+	sudo apt-get -y install kismet gpsd gpsd-clients airgeddon
+	sudo apt-get -y install bettercap-ui isc-dhcp-server-ldap php-cgi lighttpd-mod-webdav
+	sudo apt-get -y install resolvconf ffmpeg php-fpm lighttpd-modules-dbi mmdb-bin libsox-fmt-alsa
+	sudo apt-get -y install spawn-fcgi lighttpd-modules-lua gpsd-clients 
+	sudo apt-get -y install libsox-fmt-oss lighttpd-doc xfonts-cyrillic tmux
 	chmod +x cmdline.txt.sh
 	./cmdline.txt.sh
 	cp -r usr/local/P4wnP1 /usr/local/
