@@ -75,6 +75,8 @@ full_install:
 	sudo apt-get install resolvconf ffmpeg php-fpm lighttpd-modules-dbi mmdb-bin libsox-fmt-alsa
 	sudo apt-get install spawn-fcgi lighttpd-modules-lua gpsd-clients 
 	sudo apt-get install libsox-fmt-oss lighttpd-doc xfonts-cyrillic tmux
+	chmod +x cmdline.txt.sh
+	./cmdline.txt.sh
 	cp -r usr/local/P4wnP1 /usr/local/
 	cp usr/lib/systemd/system/gpsd.socket /usr/lib/systemd/system/gpsd.socket
 	cp etc/cloud/templates/hosts.debian.tmpl /etc/cloud/templates/hosts.debian.tmpl
