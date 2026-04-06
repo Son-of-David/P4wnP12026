@@ -47,8 +47,8 @@ If you rely on Wi‑Fi for admin access, avoid putting `wlan0` into monitor mode
 
 Images and profiles in this family often ship with default Wi‑Fi and P4wnP1 passkeys, as well as default credentials like:
 
-- `root:toor`
-- `kali:kali`
+- `root:kaliforewarnya`
+- `kali:kaliforewarnya`
 
 Treat defaults as insecure. **Change passwords and keys before any real deployment.**
 
@@ -78,7 +78,7 @@ GPS tooling is integrated with the host’s `gpsd` setup.
 - When deployed as documented in the tree, paths are rooted under something like `/root/P4wnP12026/...`.
 
 One common pattern is feeding GPS to `gpsd` via a **UDP listener on port 9999** (adjust to match your `gpsd` / client configuration).
-
+> Note: gpsd Relay on fdroid is the most capable currently available GPS relay for android
 ### Interactive Sessions / Terminals
 - **Airgeddon** runs inside **tmux** over a web PTY; tmux prefix keys and shortcuts behave like a normal terminal.
 - A second shell session is rooted at **`/usr/share/S.O.D/`** for local scripts and tooling.
@@ -124,32 +124,35 @@ env \
   GOARCH=arm \
   GOARM=7 \
   GOFLAGS=-mod=vendor \
-  go build -o ./build/P4wnP12026 ./cmd/P4wnP12026
+  go build -o ./build/ ./cmd/
 ```
-
+**Used on both P4wnP1_aloa and P4wnP12026
 The HTML/CSS/JS UI is embedded in the binary (`internal/webassets`), so you can run the binary from any working directory (you do not need a separate `web/` folder beside it):
+The orginal webapp.js and webapp.js.map can be used as is with no modifications
 
-```bash
-./build/P4wnP12026
-```
 
----
 
 ## Image Build Notes
 
-This image is based on packages sourced from:
+This image is https://kali.download/arm-images/kali-2026.1/kali-linux-2026.1-raspberry-pi-zero-2-w-armhf.img.xz
+logged in with kali:kali
+kali passwd changed to kaliforewarnya
+root passwd changed to kaliforewarnya 
+sudo su
+cd /root
+git clone https://github.com/Son-of-David/P4wnP12026.git
+cd P4wnP12026
+make full_install
+#connected to P4wnP1 with password MaMe82-P4wnP1
+#on my phone went to 172.24.0.1:8001 and pressed usb_gadget  
 
-- https://github.com/NightRang3r/P4wnP1-A.L.O.A.-Payloads
-- A carefully installed P4wnP1_aloa image layered onto a Kali ARMHF image:
-  - https://old.kali.org/arm-images/kali-2025.3/kali-linux-2025.3-raspberry-pi-zero-2-w-armhf.img.xz
-
-Additional upstream components were taken from:
+Note Additional upstream components were taken from:
 
 - https://github.com/RoganDawes/P4wnP1_aloa.git
 
 ### High-level build process (summary)
 
-1. Start from `kali-linux-2025.3-raspberry-pi-zero-2-w-armhf.img.xz`.
+1. Start from `https://kali.download/arm-images/kali-2026.1/kali-linux-2026.1-raspberry-pi-zero-2-w-armhf.img.xz`.
 2. Install/merge the most recently updated P4wnP1_aloa payload packages available from the sources above.
 3. Rebuild:
    - `P4wnP1_service`
@@ -159,13 +162,8 @@ Additional upstream components were taken from:
 6. Build and install the `P4wnP12026` service.
 
 ### Storage requirements
-With the older packages layered on top of the Kali ARMHF image, the result takes up most of a 16GB microSD.
+With the older packages and services layered on top of the Kali ARMHF image which is already large, the result takes up most of a 16GB microSD.
 
 - **For best results, use a 32GB microSD.**
 
-### Version selection rationale
-These images were chosen because:
-
-- The P4wnP1_aloa image was the most recently updated at the time.
-- The `kali-linux-2025.3-raspberry-pi-zero-2-w-armhf.img.xz` image is ARMHF and (in testing the) does **not** exhibit the same Kismet/Airgeddon SSID issues observed with:
-  - `kali-linux-2026.1-raspberry-pi-zero-2-w-armhf.img.xz` these issues where observed 2026-02-15 and may have been fixed.
+Img will be available at https://torchurch.us coming soon... Son-of-David 5,April,2026
