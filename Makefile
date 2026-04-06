@@ -37,7 +37,7 @@ install:
 	cp usr/share/airgeddon/.* /usr/share/airgeddon/
 	cp etc/kismet/* /etc/kismet
 	cp usr/local/bin/* /usr/local/bin/
-
+	cp etc/default/gpsd /etc/default/gpsd
 	# careful testing
 	#sudo update-rc.d dhcpcd disable
 	#sudo update-rc.d dnsmasq disable
@@ -87,7 +87,7 @@ full_install:
 	cp usr/share/airgeddon/.* /usr/share/airgeddon/
 	cp etc/kismet/* /etc/kismet
 	cp usr/local/bin/* /usr/local/bin/
-
+	cp etc/default/gpsd /etc/default/gpsd
 
         # reinit service daemon
 	systemctl daemon-reload
